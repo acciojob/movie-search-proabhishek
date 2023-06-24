@@ -3,54 +3,49 @@ import React,{useState} from "react";
 import './../styles/App.css';
 import axios from "axios"
 
+
 const App = () => {
+
   let [search, setSearch] = useState("")
-  let [movie, setMovie] = useState("")
-  
+  let [movies, setMovies] = useState(undefined)
 
-  console.log(movie)
-
-   function handleSearch(e){
-        e.preventDefault();
-        axios.get("https://www.omdbapi.com",{
-          "params":{
-            apikey : "8fb387c2",
-            type : "movie",
-            s : search
+  function handleSearch(event) {
+      event.preventDefault()
+       axios.get("http://www.omdbapi.com",{
+          params:{
+              apikey: "8fb387c2",
+              s: search
           }
-        }) 
-        .then(response => {
-             console.log("response",response.data.Search)
-             setMovie(response.data.Search)
-             setSearch("")
-        })
+       })
+       .then(response => {
+          // console.log(response.data.Search)
+          setMovies(response.data.Search)
+          setSearch("")
+       })
         .catch(err => console.log(err))
-   }
+  }
+   
 
-  return (
+  return(
     <div>
-         <h3>Search Movie</h3>
-         <form>
-         <input type="text" placeholder="search"  name="search-bar"
-            onChange={e => setSearch(e.target.value)}
-            value={search}
-         />
-         <button  type="submit" onClick={handleSearch}>Search</button>
-         </form>
-         {
-          movie ? (
-            <ul>
-                {
-                  movie.map(value =>(
-                    <li>
-                      <h2>{value.Title}</h2>
-                      <img src={value.Poster}  alt={value.Title}/>
-                    </li>
-                  ))
-                }
-            </ul>
-          ): (<h2 className="error"> Invalid movie name. Please try again.</h2>)
-         }
+        <h2>Search Movie</h2>
+        <form>
+          <input type="text" placeholder="Enter Movie Name" 
+          onChange={(e)=>{setSearch(e.target.value)}} value={search}
+          />
+          <button type="submit" onClick={handleSearch}>Search</button>
+        </form>
+          <ul>
+            { 
+            movies !== undefined ?  (
+            movies.map((movie) => (
+                  <li>
+                        <h1>{movie.Title}</h1>
+                        <img  src={movie.Poster} alt={movie.Title}/>
+                  </li>
+              ))) : (<p className="error">Invalid movie name. Please try again.</p>)
+            }
+          </ul>
     </div>
   )
 }
