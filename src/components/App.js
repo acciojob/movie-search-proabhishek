@@ -6,6 +6,7 @@ import axios from "axios"
 const App = () => {
   let [search, setSearch] = useState("")
   let [movie, setMovie] = useState("")
+  
 
   console.log(movie)
 
@@ -15,12 +16,12 @@ const App = () => {
           "params":{
             apikey : "8fb387c2",
             type : "movie",
-            t : search
+            s : search
           }
         }) 
         .then(response => {
-             console.log("response",response.data)
-             setMovie(response.data)
+             console.log("response",response.data.Search)
+             setMovie(response.data.Search)
              setSearch("")
         })
         .catch(err => console.log(err))
@@ -37,12 +38,16 @@ const App = () => {
          <button  type="submit" onClick={handleSearch}>Search</button>
          </form>
          {
-          movie && movie.Error==undefined ? (
+          movie ? (
             <ul>
-                <li>
-                  <h2>{movie.Title}</h2>
-                  <img src={movie.Poster}  alt={movie.Title}/>
-                </li>
+                {
+                  movie.map(value =>(
+                    <li>
+                      <h2>{value.Title}</h2>
+                      <img src={value.Poster}  alt={value.Title}/>
+                    </li>
+                  ))
+                }
             </ul>
           ): (<h2 className="error"> Invalid movie name. Please try again.</h2>)
          }
